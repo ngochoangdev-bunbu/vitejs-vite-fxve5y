@@ -1,0 +1,23 @@
+{
+  "name": "@repo/common-utils",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./master": "./src/master/index.ts",
+    "./interfaces": "./src/interfaces/index.ts",
+    "./helpers": "./src/helpers/index.ts"
+  },
+  "scripts": {
+    "lint": "eslint \"src/**/*.{ts,tsx}\"",
+    "type-check": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "eslint": "^8",
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "dayjs": "^1.11.19",
+    "googleapis": "^140.0.1"
+  }
+}

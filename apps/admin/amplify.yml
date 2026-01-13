@@ -1,0 +1,51 @@
+version: 1
+applications:
+  - frontend:
+      phases:
+        preBuild:
+          commands:
+            - |
+              echo "Checking for changes in admin project..."
+
+              # Try to get changed files
+              CHANGED_FILES=$(git diff --name-only HEAD~1 HEAD 2>/dev/null || git show --name-only --pretty="" HEAD 2>/dev/null || echo "")
+              
+              # If we can't detect changes (new branch, first commit, etc.), always build
+              if [ -z "$CHANGED_FILES" ]; then
+                echo "Cannot detect changes (possibly new branch or first commit), proceeding with build for safety"
+              else
+                echo "Changed files: $CHANGED_FILES"
+                
+                # Check if admin or backend files changed
+                if echo "$CHANGED_FILES" | grep -E "^(apps/admin|packages/amplify-backend)" > /dev/null; then
+                  echo "Admin changes detected, proceeding with build"
+                else
+                  echo "No admin changes, skipping build"
+                  exit 0
+                fi
+              fi
+
+              echo "Building admin..."
+            - npm install
+            - npx ampx generate outputs --branch $AWS_BRANCH --app-id d31tu5e07ftf7t --out-dir packages/amplify-backend
+            - echo "COGNITO_USER_POOL_CLIENT_ID=$COGNITO_USER_POOL_CLIENT_ID" >> apps/admin/.env
+            - echo "GOOGLE_CLIENT_EMAIL=$GOOGLE_CLIENT_EMAIL" >> apps/admin/.env
+            - echo "GOOGLE_PRIVATE_KEY=$GOOGLE_PRIVATE_KEY" >> apps/admin/.env
+            - echo "GOOGLE_SPREADSHEET_ID=$GOOGLE_SPREADSHEET_ID" >> apps/admin/.env
+            - echo "MISOCA_SECRET=$MISOCA_SECRET" >> apps/admin/.env
+            - echo "STRIPE_SECRET_KEY=$STRIPE_SECRET_KEY" >> apps/admin/.env
+            - echo "RECAPTCHA_SECRET_KEY=$RECAPTCHA_SECRET_KEY" >> apps/admin/.env
+            - echo "AMAZON_SES_EMAIL=$AMAZON_SES_EMAIL" >> apps/admin/.env
+        build:
+          commands:
+            - npx turbo run build --filter=admin
+      artifacts:
+        baseDirectory: apps/admin/.next
+        files:
+          - "**/*"
+      cache:
+        paths:
+          - .next/cache/**/*
+          - node_modules/**/*
+      buildPath: /
+    appRoot: apps/admin

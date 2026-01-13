@@ -1,30 +1,96 @@
-# React + TypeScript + Vite
+# Turborepo TypeScript Next.js Monorepo
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+このプロジェクトは、TurborepoとTypeScriptを使用したNext.jsモノレポのサンプルです。
 
-Currently, two official plugins are available:
+## プロジェクト構造
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
+```bash
+monorepo-test/
+├── apps/
+│   ├── admin/          # 管理画面アプリ (port: 3002)
+│   └── service/        # サービスアプリ (port: 3001)
+├── packages/
+│   ├── ui/             # 共有UIコンポーネント
+│   └── typescript-config/  # TypeScript設定
+├── turbo.json          # Turborepo設定
+└── package.json        # ルートpackage.json
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+## 開始方法
+
+### 依存関係のインストール
+
+```bash
+npm install
+```
+
+### 開発サーバーの起動
+
+全てのアプリを同時に起動:
+
+```bash
+npm run dev
+```
+
+個別のアプリを起動:
+
+```bash
+# サービスアプリ (http://localhost:3001)
+cd apps/service && npm run dev
+
+# 管理画面アプリ (http://localhost:3002)
+cd apps/admin && npm run dev
+```
+
+### ビルド
+
+全てのアプリをビルド:
+
+```bash
+npm run build
+```
+
+### リント
+
+```bash
+npm run lint
+```
+
+### 型チェック
+
+```bash
+npm run type-check
+```
+
+## アプリケーション
+
+### Service App (http://localhost:3001)
+
+- サービス向けのアプリケーション
+- `/api` エンドポイントが利用可能
+
+### Admin App (http://localhost:3002)
+
+- 管理画面アプリケーション
+- `/dashboard` でダッシュボード表示
+
+## パッケージ
+
+### UI Package
+
+- `Button`: プライマリ・セカンダリボタンコンポーネント
+- `Card`: カードコンポーネント
+
+### TypeScript Config
+
+- `base.json`: ベースTypeScript設定
+- `nextjs.json`: Next.js用設定
+- `react-library.json`: Reactライブラリ用設定
+
+## スクリプト
+
+- `npm run dev`: 全アプリの開発サーバー起動
+- `npm run build`: 全アプリのビルド
+- `npm run lint`: 全アプリのリント
+- `npm run type-check`: 全アプリの型チェック
+- `npm run clean`: キャッシュクリア

@@ -1,0 +1,49 @@
+version: 1
+applications:
+  - backend:
+      phases:
+        preBuild:
+          commands:
+            - |
+              echo "Checking for changes in backend project..."
+
+              # Try to get changed files
+              CHANGED_FILES=$(git diff --name-only HEAD~1 HEAD 2>/dev/null || git show --name-only --pretty="" HEAD 2>/dev/null || echo "")
+              
+              # If we can't detect changes (new branch, first commit, etc.), always build
+              if [ -z "$CHANGED_FILES" ]; then
+                echo "Cannot detect changes (possibly new branch or first commit), proceeding with deployment for safety"
+              else
+                echo "Changed files: $CHANGED_FILES"
+                
+                # Check if backend files changed
+                if echo "$CHANGED_FILES" | grep -E "^packages/amplify-backend" > /dev/null; then
+                  echo "Backend changes detected, proceeding with deployment"
+                else
+                  echo "No backend changes, skipping deployment"
+                  exit 0
+                fi
+              fi
+
+              echo "Deploying backend..."
+            - echo "Node version:" && node --version
+            - echo "NPM version:" && npm --version
+            - npm install
+        build:
+          commands:
+            - npx ampx pipeline-deploy --branch $AWS_BRANCH --app-id $AWS_APP_ID
+    frontend:
+      phases:
+        preBuild:
+          commands: [""]
+        build:
+          commands: [""]
+      artifacts:
+        baseDirectory: nobuilderror
+        files:
+          - "**/*"
+      cache:
+        paths:
+          - "node_modules/**/*"
+      buildPath: packages/amplify-backend
+    appRoot: packages/amplify-backend

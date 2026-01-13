@@ -1,0 +1,36 @@
+{
+  "name": "admin",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "build": "next build",
+    "dev": "next dev --port 3002",
+    "lint": "next lint",
+    "start": "next start",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@aws-amplify/ui-react": "^6.13.0",
+    "@repo/common-utils": "*",
+    "@tailwindcss/forms": "^0.5.10",
+    "@tailwindcss/postcss": "^4.1.15",
+    "aws-amplify": "^6.15.7",
+    "googleapis": "^140.0.1",
+    "next": "^14.2.33",
+    "react": "^18",
+    "react-dom": "^18",
+    "tailwindcss": "^4.1.15",
+    "ui": "*"
+  },
+  "devDependencies": {
+    "@repo/amplify-backend": "*",
+    "@repo/eslint-config": "*",
+    "@svgr/webpack": "^8.1.0",
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "eslint": "^8.57.1",
+    "eslint-config-next": "14.0.3",
+    "typescript": "^5.9.3"
+  }
+}
